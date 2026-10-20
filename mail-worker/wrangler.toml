@@ -6,9 +6,12 @@ keep_vars = true
 [observability]
 enabled = true
 
-# Workers Builds rejects empty id/database_id. Fill real UUIDs, then uncomment.
+# Required for Workers Builds PR previews (`npx wrangler preview`).
+[previews]
+
 # Variable name: db  →  existing D1: cloud-mail-db
 # Variable name: kv  →  existing KV: cloud-mail-kv
+# Fill real UUIDs, then uncomment (empty id fails Wrangler validation).
 #[[d1_databases]]
 #binding = "db"
 #database_name = "cloud-mail-db"

@@ -6,6 +6,12 @@
     </div>
     <el-scrollbar class="scrollbar" ref="scrollbarRef">
       <div v-infinite-scroll="getAccountList" :infinite-scroll-distance="600" :infinite-scroll-immediate="false">
+        <el-card class="item all-item" :class="accountStore.viewAll ? 'item-choose' : ''" @click="openAllInbox">
+          <div class="account all-label">
+            <Icon icon="fluent:mail-inbox-all-24-regular" width="18" height="18"/>
+            <span>{{ $t('allInbox') }}</span>
+          </div>
+        </el-card>
         <el-card class="item" :class="itemBg(item.accountId)" v-for="(item, index) in accounts" :key="item.accountId"
                  @click="changeAccount(item)">
           <div class="account">
@@ -155,6 +161,7 @@ const showAdd = ref(false)
 const addLoading = ref(false);
 const domainList = computed(() => settingStore.domainList)
 const accounts = reactive([])
+accountStore.accounts = accounts
 const noLoading = ref(false)
 const loading = ref(false)
 const followLoading = ref(false);
@@ -299,7 +306,12 @@ function showNullSetting(item) {
 }
 
 function itemBg(accountId) {
+  if (accountStore.viewAll) return ''
   return accountStore.currentAccountId === accountId ? 'item-choose' : ''
+}
+
+function openAllInbox() {
+  accountStore.viewAll = true
 }
 
 
@@ -341,6 +353,7 @@ function refresh() {
 }
 
 function changeAccount(account) {
+  accountStore.viewAll = false
   accountStore.currentAccountId = account.accountId
   accountStore.currentAccount = account
 }
@@ -597,6 +610,13 @@ path[fill="#ffdda1"] {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+    }
+
+    .all-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 0;
     }
 
     .opt {

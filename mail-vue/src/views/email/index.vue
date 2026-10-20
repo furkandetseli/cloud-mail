@@ -54,7 +54,7 @@ onMounted(() => {
 })
 
 
-watch(() => accountStore.currentAccountId, () => {
+watch(() => [accountStore.currentAccountId, accountStore.viewAll], () => {
   scroll.value.refreshList();
 })
 
@@ -89,7 +89,7 @@ async function latest() {
     if (!scroll.value.firstLoad && autoRefresh > 1) {
       try {
         const accountId = accountStore.currentAccountId
-        const allReceive = scroll.value.latestEmail?.allReceive
+        const allReceive = accountStore.receiveAll
         const curTimeSort = params.timeSort
         let list = []
 
@@ -99,7 +99,7 @@ async function latest() {
         }
 
         //确保请求回来后，账号没有切换，时间排序没有改变，全部邮件类型没变
-        if (accountId === accountStore.currentAccountId && params.timeSort === curTimeSort && allReceive === accountStore.currentAccount.allReceive) {
+        if (accountId === accountStore.currentAccountId && params.timeSort === curTimeSort && allReceive === accountStore.receiveAll) {
           if (list.length > 0) {
             emailStore.applyFullList(list)
 
@@ -141,7 +141,7 @@ function cancelStar(email) {
 
 function getEmailList(emailId, size) {
   const accountId =  accountStore.currentAccountId;
-  const allReceive = accountStore.currentAccount.allReceive;
+  const allReceive = accountStore.receiveAll;
   return emailStore.fetchList(full =>
     emailList(accountId, allReceive, emailId, params.timeSort, size, 0, full)
   ).then(data => {

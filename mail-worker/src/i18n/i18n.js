@@ -6,14 +6,6 @@ import app from '../hono/hono';
 
 const supportedLangs = ['zh', 'en', 'tr']
 
-app.use('*', async (c, next) => {
-	const lang = c.req.header('accept-language')?.split(',')[0]?.split('-')[0]
-	i18next.init({
-		lng: supportedLangs.includes(lang) ? lang : 'en',
-	});
-	return await next()
-})
-
 const resources = {
 	en: {
 		translation: en
@@ -27,10 +19,20 @@ const resources = {
 };
 
 i18next.init({
-	fallbackLng: 'zh',
+	lng: 'en',
+	fallbackLng: 'en',
 	resources,
+	initImmediate: false,
 });
 
-export const t = (key, values) => i18next.t(key, values)
+let currentLng = 'en'
+
+app.use('*', async (c, next) => {
+	const lang = c.req.header('accept-language')?.split(',')[0]?.split('-')[0]
+	currentLng = supportedLangs.includes(lang) ? lang : 'en'
+	return await next()
+})
+
+export const t = (key, values) => i18next.t(key, { ...(values || {}), lng: currentLng })
 
 export default i18next;

@@ -8,7 +8,22 @@
           </span>
           <span class="sender">{{ $t('sender') }}:</span>
           <span class="sender-name">{{ form.name }}</span>
-          <span class="send-email"><{{ form.sendEmail }}></span>
+          <el-dropdown v-if="senderAccounts.length > 1" trigger="click" @command="selectSender">
+            <span class="send-email sender-pick">
+              <{{ form.sendEmail }}>
+              <Icon icon="mingcute:down-small-fill" width="18" height="18"/>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                    v-for="item in senderAccounts"
+                    :key="item.accountId"
+                    :command="item.accountId"
+                >{{ item.email }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+          <span v-else class="send-email"><{{ form.sendEmail }}></span>
         </div>
         <div @click="close" style="cursor: pointer;">
           <Icon icon="material-symbols-light:close-rounded" width="22" height="22"/>
@@ -173,6 +188,12 @@ const form = reactive({
 const selectRecipientList = ref([])
 
 const contacts = computed(() => writerStore.sendRecipientRecord.map(item => ({email: item})))
+const senderAccounts = computed(() => {
+  const list = accountStore.accounts.filter(item => item?.email && !item.isDel)
+  if (list.length) return list
+  if (userStore.user.account?.email) return [userStore.user.account]
+  return []
+})
 const separateSendLabel = computed(() => t(form.sendType === 'forward' ? 'separateForward' : 'separateSend'))
 const sendButtonLabel = computed(() => {
   if (form.manyType === 'divide') return separateSendLabel.value
@@ -529,6 +550,14 @@ function formatImage(content) {
   return content.replace(/{{domain}}/g, toOssDomain(domain) + '/');
 }
 
+function selectSender(accountId) {
+  const account = senderAccounts.value.find(item => item.accountId === accountId)
+  if (!account) return
+  form.sendEmail = account.email
+  form.accountId = account.accountId
+  form.name = account.name || ''
+}
+
 function open() {
   if (!accountStore.currentAccount.email) {
     form.sendEmail = userStore.user.email;
@@ -702,6 +731,13 @@ function close() {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+      }
+
+      .sender-pick {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        max-width: 100%;
       }
 
 

@@ -1,5 +1,6 @@
 const tr = {
     inbox: 'Gelen kutusu',
+    allInbox: 'Tüm gelen kutusu',
     drafts: 'Taslaklar',
     sent: 'Gönderilenler',
     starred: 'Yıldızlı',

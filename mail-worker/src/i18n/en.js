@@ -73,6 +73,8 @@ const en = {
 	dbNotInit: 'Database is not initialized',
 	updateEmailStatusFail: 'Failed to update email status',
 	oauthAlreadyBound: 'This user is already bound to an email',
+	roleUser: 'User',
+	roleUserDesc: 'Basic permissions',
 	perms: {
 		"邮件": "Emails",
 		"邮件发送": "Send Email",

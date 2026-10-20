@@ -73,7 +73,7 @@ const regKeyService = {
 		regKeyList.forEach(regKeyRow => {
 
 			const index = roleList.findIndex(roleRow => roleRow.roleId === regKeyRow.roleId)
-			regKeyRow.roleName = index > -1 ? roleList[index].name : ''
+			regKeyRow.roleName = index > -1 ? (roleList[index].displayName || roleList[index].name) : ''
 
 			const expireTime = toUtc(regKeyRow.expireTime).tz('Asia/Shanghai').startOf('day');
 

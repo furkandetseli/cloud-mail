@@ -72,6 +72,7 @@
                     <span>
                       <div class="unread" v-if="isMobile && (item.unread === EmailUnreadEnum.UNREAD && showUnread) "/>
                       <slot name="name" :email="item"> {{ item.name }}</slot>
+                      <span v-if="showBoxMail" class="box-mail">{{ boxMail(item) }}</span>
                     </span>
                     <span>
                       <Icon v-if="item.isStar" icon="fluent-color:star-16" width="18" height="18"/>
@@ -239,6 +240,7 @@ import {Icon} from "@iconify/vue";
 import skeletonBlock from "@/components/email-scroll/skeleton/index.vue"
 import {computed, onActivated, reactive, ref, watch, nextTick, onMounted, onUnmounted } from "vue";
 import {useEmailStore} from "@/store/email.js";
+import {useAccountStore} from "@/store/account.js";
 import {useUiStore} from "@/store/ui.js";
 import {useSettingStore} from "@/store/setting.js";
 import {sleep} from "@/utils/time-utils.js"
@@ -301,6 +303,12 @@ const props = defineProps({
 const emit = defineEmits(['jump', 'refresh-before', 'delete-draft', 'right-search'])
 const {t} = useI18n()
 const settingStore = useSettingStore()
+const accountStore = useAccountStore()
+const showBoxMail = computed(() => accountStore.receiveAll === 1 && ['email', 'send'].includes(props.type))
+
+function boxMail(item) {
+  return props.type === 'send' ? item.sendEmail : item.toEmail
+}
 const uiStore = useUiStore();
 const emailStore = useEmailStore();
 const loading = ref(false);
@@ -1111,6 +1119,13 @@ function loadData() {
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
+        }
+
+        .box-mail {
+          margin-left: 8px;
+          color: #909399;
+          font-size: 12px;
+          font-weight: 400;
         }
 
         .name-skeleton {

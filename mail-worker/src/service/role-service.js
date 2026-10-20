@@ -11,6 +11,15 @@ import verifyUtils from '../utils/verify-utils';
 import { t } from '../i18n/i18n.js';
 import emailUtils from '../utils/email-utils';
 
+function localizeRole(row) {
+	if (!row) return row
+	row.displayName = row.name === '普通用户' ? t('roleUser') : row.name
+	if (row.description != null) {
+		row.displayDescription = row.description === '只有普通使用权限' ? t('roleUserDesc') : row.description
+	}
+	return row
+}
+
 const roleService = {
 
 	async add(c, params, userId) {
@@ -53,10 +62,11 @@ const roleService = {
 			.leftJoin(perm, eq(perm.permId, rolePerm.permId))
 			.where(eq(perm.type, permConst.type.BUTTON)).all();
 
-		roleList.forEach(role => {
-			role.banEmail = role.banEmail.split(",").filter(item => item !== "");
-			role.availDomain = role.availDomain.split(",").filter(item => item !== "");
-			role.permIds = permList.filter(perm => perm.roleId === role.roleId).map(perm => perm.permId);
+		roleList.forEach(roleRow => {
+			roleRow.banEmail = roleRow.banEmail.split(",").filter(item => item !== "");
+			roleRow.availDomain = roleRow.availDomain.split(",").filter(item => item !== "");
+			roleRow.permIds = permList.filter(perm => perm.roleId === roleRow.roleId).map(perm => perm.permId);
+			localizeRole(roleRow)
 		});
 
 		return roleList;
@@ -115,8 +125,10 @@ const roleService = {
 
 	},
 
-	roleSelectUse(c) {
-		return orm(c).select({ name: role.name, roleId: role.roleId, isDefault: role.isDefault }).from(role).orderBy(asc(role.sort)).all();
+	async roleSelectUse(c) {
+		const list = await orm(c).select({ name: role.name, roleId: role.roleId, isDefault: role.isDefault }).from(role).orderBy(asc(role.sort)).all();
+		list.forEach(localizeRole)
+		return list
 	},
 
 	async selectDefaultRole(c) {

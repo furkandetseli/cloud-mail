@@ -1,5 +1,6 @@
 const zh = {
     inbox: '收件箱',
+    allInbox: '全部收件箱',
     drafts: '草稿箱',
     sent: '已发送',
     starred: '星标邮件',

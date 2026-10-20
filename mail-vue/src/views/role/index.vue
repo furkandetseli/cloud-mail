@@ -18,7 +18,7 @@
         <el-table-column :label="$t('role')" prop="name" :min-width="roleWidth">
           <template #default="props">
             <div class="role-name">
-              <span>{{ props.row.name }}</span>
+              <span>{{ props.row.displayName || props.row.name }}</span>
               <span v-if="props.row.isDefault"><el-tag class="def-tag">{{ $t('default') }}</el-tag></span>
             </div>
           </template>
@@ -27,7 +27,7 @@
         <el-table-column v-if="desShow" :label="$t('description')" min-width="200" prop="description">
           <template #default="props">
             <div class="description">
-              <span>{{ props.row.description }}</span>
+              <span>{{ props.row.displayDescription || props.row.description }}</span>
             </div>
           </template>
         </el-table-column>

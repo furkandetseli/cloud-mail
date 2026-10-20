@@ -6,14 +6,17 @@ keep_vars = true
 [observability]
 enabled = true
 
-[[d1_databases]]
-binding = "db"					# Variable name (değiştirme)
-database_name = "cloud-mail-db"	# Seçilecek mevcut kaynak
-database_id = ""				# Cloudflare → D1 → cloud-mail-db → Database ID
+# Workers Builds rejects empty id/database_id. Fill real UUIDs, then uncomment.
+# Variable name: db  →  existing D1: cloud-mail-db
+# Variable name: kv  →  existing KV: cloud-mail-kv
+#[[d1_databases]]
+#binding = "db"
+#database_name = "cloud-mail-db"
+#database_id = ""				# Cloudflare → D1 → cloud-mail-db → Database ID
 
-[[kv_namespaces]]
-binding = "kv"					# Variable name (değiştirme)
-id = ""							# Cloudflare → KV → cloud-mail-kv → Namespace ID
+#[[kv_namespaces]]
+#binding = "kv"
+#id = ""						# Cloudflare → KV → cloud-mail-kv → Namespace ID
 
 #[[r2_buckets]]
 #binding = "r2"			#r2对象存储绑定名默认不可修改

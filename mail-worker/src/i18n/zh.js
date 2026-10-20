@@ -70,6 +70,9 @@ const zh = {
 	notAdmin: '输入的邮箱不是管理员邮箱',
 	emailExistDatabase: '有邮箱已存在数据库中',
 	notConfigOss: '对象存储未配置',
+	dbNotInit: '数据库未初始化',
+	updateEmailStatusFail: '更新邮件状态记录失败',
+	oauthAlreadyBound: '用户已绑定有邮箱',
 	perms: {
 		"邮件": "邮件",
 		"邮件发送": "邮件发送",

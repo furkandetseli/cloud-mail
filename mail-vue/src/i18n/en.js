@@ -361,6 +361,10 @@ const en = {
     clientId: 'Client ID',
     clientSecret: 'Client Secret',
     notOwner: 'Base email does not belong to you',
+    loggingIn: 'Signing in...',
+    bindEmailTitle: 'Bind email',
+    bind: 'Bind',
+    bindEmailRequired: 'Please bind an email address',
 }
 
 export default en

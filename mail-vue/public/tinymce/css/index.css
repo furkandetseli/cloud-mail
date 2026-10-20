@@ -21,6 +21,12 @@ body {
     font-size: 14px;
 }
 
+@media (hover: none) and (pointer: coarse) {
+    body {
+        font-size: 16px;
+    }
+}
+
 :root {
     --scrollbar-thumb-color: #FFFFFF;
     --scrollbar-track-color: #A8ABB2;

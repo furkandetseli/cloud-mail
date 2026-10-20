@@ -195,7 +195,15 @@ function formatUserCreateTime(regKey) {
   const currentYear = dayjs().year();
   const expireYear = createTime.year();
 
-  if (settingStore.lang === 'en') {
+  if (settingStore.lang === 'tr') {
+
+    if (expireYear === currentYear) {
+      return createTime.format('D MMM HH:mm');
+    } else {
+      return createTime.format('D MMM YYYY HH:mm');
+    }
+
+  } else if (settingStore.lang === 'en') {
 
     if (expireYear === currentYear) {
       return createTime.format('MMM D, HH:mm');
@@ -220,7 +228,13 @@ function formatExpireTime(expireTime) {
   const currentYear = dayjs().year();
   const expireYear = expireDate.year();
 
-  if (settingStore.lang === 'en') {
+  if (settingStore.lang === 'tr') {
+
+    return expireYear === currentYear
+        ? expireDate.format('D MMM')
+        : expireDate.format('D MMM YYYY');
+
+  } else if (settingStore.lang === 'en') {
 
     return expireYear === currentYear
         ? expireDate.format('MMM D')
@@ -269,7 +283,7 @@ async function copyCode(code) {
   } catch (err) {
     console.error('复制失败:', err);
     ElMessage({
-      message: '复制失败',
+      message: t('copyFailMsg'),
       type: 'error',
       plain: true,
     })

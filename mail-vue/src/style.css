@@ -55,6 +55,19 @@ button, input, select, textarea {
     background: none;
 }
 
+/* iOS/Android, 16px altındaki alana odaklanınca sayfayı yakınlaştırır ve klavye kapanınca geri almaz. */
+@media (hover: none) and (pointer: coarse) {
+    input,
+    textarea,
+    select,
+    .el-input__inner,
+    .el-textarea__inner,
+    .el-input-tag__input,
+    .el-select__input {
+        font-size: 16px !important;
+    }
+}
+
 *:focus {
     outline: none;
 }

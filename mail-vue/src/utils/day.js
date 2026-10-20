@@ -1,12 +1,20 @@
 import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
+import 'dayjs/locale/tr'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import {useSettingStore} from "@/store/setting.js";
 const settingStore = useSettingStore();
 dayjs.extend(utc)
 dayjs.extend(timezone)
-dayjs.locale(settingStore.lang === 'en' ? 'en' : 'zh-cn')
+
+const dayjsLocale = {
+    zh: 'zh-cn',
+    en: 'en',
+    tr: 'tr',
+}
+
+dayjs.locale(dayjsLocale[settingStore.lang] || 'en')
 const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export function fromNow(date) {
@@ -16,7 +24,20 @@ export function fromNow(date) {
     const diffMinutes = now.diff(d, 'minute');
     const diffHours = now.diff(d, 'hour');
     const isToday = now.isSame(d, 'day');
-    if (settingStore.lang === 'en') {
+    if (settingStore.lang === 'tr') {
+        if (isToday) {
+            if (diffSeconds < 60) return 'Az önce';
+            if (diffMinutes < 60) return `${diffMinutes} dk önce`;
+            if (diffHours < 2) return `${diffHours} saat önce`;
+            return d.format('HH:mm');
+        }
+        if (now.subtract(1, 'day').isSame(d, 'day')) {
+            return `Dün ${d.format('HH:mm')}`;
+        }
+        return d.year() === now.year()
+            ? d.format('D MMM')
+            : d.format('D MMM YYYY');
+    } else if (settingStore.lang === 'en') {
 
         if (isToday) {
             if (diffSeconds < 60) return `Just now`;
@@ -71,7 +92,9 @@ export function formatDetailDate(time) {
 
     const isSameYear = now.year() === d.year();
 
-    if (settingStore.lang === 'en') {
+    if (settingStore.lang === 'tr') {
+        return d.format('D MMM YYYY, ddd HH:mm');
+    } else if (settingStore.lang === 'en') {
         return isSameYear
             ? d.format('ddd, MMM D, h:mm A')
             : d.format('ddd, MMM D, YYYY, h:mm A');

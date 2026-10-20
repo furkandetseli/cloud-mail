@@ -11,7 +11,7 @@
         </el-input>
       </div>
       <el-select v-model="params.status" placeholder="Select" class="status-select"
-                 :style="`width: ${locale === 'en' ? 95 : 80 }px`">
+                 :style="`width: ${locale === 'zh' ? 80 : 115 }px`">
         <el-option :key="-1" :label="$t('all')" :value="-1"/>
         <el-option :key="0" :label="$t('active')" :value="0"/>
         <el-option :key="1" :label="$t('banned')" :value="1"/>
@@ -206,13 +206,13 @@
             <div class="email-row">{{ props.row.email }}</div>
           </template>
         </el-table-column>
-        <el-table-column property="address" :label="t('tabStatus')"  :width="locale === 'en' ? 75 : 65" >
+        <el-table-column property="address" :label="t('tabStatus')"  :width="locale === 'zh' ? 65 : 90" >
           <template #default="props">
             <el-tag type="primary" disable-transitions v-if="props.row.isDel === 0">{{$t('active')}}</el-tag>
             <el-tag type="info" disable-transitions v-if="props.row.isDel === 1">{{$t('deleted')}}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="t('action')" :width="locale === 'en' ? 75 : 65" >
+        <el-table-column :label="t('action')" :width="locale === 'zh' ? 65 : 90" >
           <template #default="props">
             <el-dropdown trigger="click">
               <el-button type="primary" size="small">{{t('action')}}</el-button>
@@ -1057,7 +1057,7 @@ function adjustWidth() {
   sendNumShow.value = width > 685
   typeShow.value = width > 767
   emailWidth.value = width > 480 ? 230 : null
-  settingWidth.value = width < 480 ? (locale.value === 'en' ? 85 : 75) : null
+  settingWidth.value = width < 480 ? (locale.value === 'zh' ? 75 : 90) : null
   expandWidth.value = width < 480 ? 30 : 35
   pagerCount.value = width < 768 ? 7 : 11
   receiveWidth.value = width < 480 ? 90 : null

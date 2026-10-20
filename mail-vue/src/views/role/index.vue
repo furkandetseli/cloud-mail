@@ -120,7 +120,7 @@
                                  :placeholder="$t('total')">
                 </el-input-number>
                   <el-select v-model="form.sendType" placeholder="Select" size="small"
-                             :style="`width: ${ locale === 'zh' ? 65 : 85 }px;margin-left: 5px;`">
+                             :style="`width: ${ locale === 'zh' ? 65 : locale === 'tr' ? 100 : 85 }px;margin-left: 5px;`">
                     <el-option :label="$t('total')" value="count"/>
                     <el-option :label="$t('daily')" value="day"/>
                     <el-option :label="$t('internal')" value="internal"/>
@@ -401,7 +401,7 @@ function getRoleList() {
 
 function adjustWidth() {
   desShow.value = window.innerWidth > 767
-  settingWidth.value = window.innerWidth < 480 ? (locale.value === 'en' ? 85 : 75) : null
+  settingWidth.value = window.innerWidth < 480 ? (locale.value === 'zh' ? 75 : 90) : null
   sortWidth.value = window.innerWidth < 480 ? 75 : null
   roleWidth.value = window.innerWidth < 480 ? 180 : 200
 }

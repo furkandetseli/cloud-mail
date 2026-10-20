@@ -7,11 +7,11 @@ keep_vars = true
 enabled = true
 
 # Required for Workers Builds PR previews (`npx wrangler preview`).
-# Empty table is valid (parses as {}). If Builds still fails, the Preview
-# command is likely running from repo root (workers-sdk#15979) — set dashboard
-# Preview command to: npx wrangler preview --cwd mail-worker
-# (or rely on the root wrangler.toml shim).
 [previews]
+
+# Previews do not inherit production bindings.
+[previews.ai]
+binding = "ai"
 
 # Variable name: db  →  existing D1: cloud-mail-db
 # Variable name: kv  →  existing KV: cloud-mail-kv

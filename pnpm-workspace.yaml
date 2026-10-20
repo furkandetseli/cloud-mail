@@ -1,0 +1,3 @@
+packages:
+  - mail-worker
+  - mail-vue

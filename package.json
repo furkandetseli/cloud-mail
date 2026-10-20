@@ -1,0 +1,13 @@
+{
+  "name": "cloud-mail",
+  "private": true,
+  "packageManager": "pnpm@10.33.4",
+  "scripts": {
+    "build": "pnpm --dir mail-vue install && pnpm --dir mail-vue run build",
+    "deploy": "pnpm --dir mail-worker exec wrangler deploy",
+    "preview": "pnpm --dir mail-worker exec wrangler preview"
+  },
+  "devDependencies": {
+    "wrangler": "^4.151.3"
+  }
+}

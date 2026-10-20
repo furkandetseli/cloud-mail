@@ -7,6 +7,10 @@ keep_vars = true
 enabled = true
 
 # Required for Workers Builds PR previews (`npx wrangler preview`).
+# Empty table is valid (parses as {}). If Builds still fails, the Preview
+# command is likely running from repo root (workers-sdk#15979) — set dashboard
+# Preview command to: npx wrangler preview --cwd mail-worker
+# (or rely on the root wrangler.toml shim).
 [previews]
 
 # Variable name: db  →  existing D1: cloud-mail-db
@@ -49,5 +53,7 @@ crons = ["0 * * * *"]	#每小时执行；resetDaySendCount 仅在 UTC 0 点生�
 #admin = ""					#管理员的邮箱	示例: admin@example.com
 #jwt_secret = ""			#jwt令牌的密钥,随便填一串字符串
 
+# Do not use `pnpm --prefix ../mail-vue install` — modern pnpm installs into the
+# current package (mail-worker) and leaves mail-vue without node_modules/vite.
 [build]
-command = "pnpm --prefix ../mail-vue install && pnpm --prefix ../mail-vue run build"
+command = "cd ../mail-vue && pnpm install && pnpm run build"

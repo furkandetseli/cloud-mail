@@ -12,6 +12,7 @@ import userService from '../service/user-service';
 import telegramService from '../service/telegram-service';
 import aiService from '../service/ai-service';
 import webhookService from '../service/webhook-service';
+import pushService from '../service/push-service';
 
 export async function email(message, env, ctx) {
 
@@ -158,6 +159,11 @@ export async function email(message, env, ctx) {
 
 		emailRow = await emailService.completeReceive({ env }, account ? emailConst.status.RECEIVE : emailConst.status.NOONE, emailRow.emailId);
 
+		if (emailRow?.userId) {
+			const notify = pushService.notifyNewEmail({ env }, emailRow).catch((err) => console.error(err));
+			if (ctx?.waitUntil) ctx.waitUntil(notify);
+			else await notify;
+		}
 
 		if (ruleType === settingConst.ruleType.RULE) {
 

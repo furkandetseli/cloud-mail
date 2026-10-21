@@ -21,12 +21,20 @@ export default defineConfig(({mode}) => {
                 manifest: {
                     name: env.VITE_PWA_NAME,
                     short_name: env.VITE_PWA_NAME,
+                    display: 'standalone',
+                    start_url: '/',
+                    scope: '/',
                     background_color: '#FFFFFF',
                     theme_color: '#FFFFFF',
                     icons: [
                         {
                             src: 'mail-pwa.png',
                             sizes: '192x192',
+                            type: 'image/png',
+                        },
+                        {
+                            src: 'mail-pwa.png',
+                            sizes: '512x512',
                             type: 'image/png',
                         }
                     ],
@@ -37,6 +45,7 @@ export default defineConfig(({mode}) => {
                     runtimeCaching: [],
                     navigateFallback: null,
                     cleanupOutdatedCaches: true,
+                    importScripts: ['push-sw.js'],
                 }
             }),
             AutoImport({

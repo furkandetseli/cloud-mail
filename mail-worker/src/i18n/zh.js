@@ -73,6 +73,7 @@ const zh = {
 	dbNotInit: '数据库未初始化',
 	updateEmailStatusFail: '更新邮件状态记录失败',
 	oauthAlreadyBound: '用户已绑定有邮箱',
+	pushBad: '通知订阅无效',
 	roleUser: '普通用户',
 	roleUserDesc: '只有普通使用权限',
 	perms: {

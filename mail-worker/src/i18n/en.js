@@ -73,6 +73,7 @@ const en = {
 	dbNotInit: 'Database is not initialized',
 	updateEmailStatusFail: 'Failed to update email status',
 	oauthAlreadyBound: 'This user is already bound to an email',
+	pushBad: 'Invalid notification subscription',
 	roleUser: 'User',
 	roleUserDesc: 'Basic permissions',
 	perms: {

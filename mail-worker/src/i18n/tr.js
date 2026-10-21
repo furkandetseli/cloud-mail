@@ -73,6 +73,7 @@ const tr = {
 	dbNotInit: 'Veritabanı başlatılmamış',
 	updateEmailStatusFail: 'E-posta durum kaydı güncellenemedi',
 	oauthAlreadyBound: 'Kullanıcı zaten bir e-postaya bağlı',
+	pushBad: 'Geçersiz bildirim aboneliği',
 	roleUser: 'Kullanıcı',
 	roleUserDesc: 'Temel kullanım yetkisi',
 	perms: {

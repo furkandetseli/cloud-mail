@@ -43,6 +43,15 @@
         <el-option label="Türkçe" value="tr" @pointerdown.prevent.stop="changeLang('tr')"/>
       </el-select>
     </div>
+    <div class="language">
+      <div class="title">{{$t('pushTitle')}}</div>
+      <div style="color: var(--regular-text-color);">{{$t('pushDesc')}}</div>
+      <div>
+        <el-button type="primary" :loading="pushLoading" @click="togglePush">
+          {{ pushOn ? $t('pushDisable') : $t('pushEnable') }}
+        </el-button>
+      </div>
+    </div>
     <div class="del-email" v-perm="'my:delete'">
       <div class="title">{{$t('deleteUser')}}</div>
       <div style="color: var(--regular-text-color);">
@@ -62,7 +71,7 @@
   </div>
 </template>
 <script setup>
-import {reactive, ref, defineOptions} from 'vue'
+import {onMounted, reactive, ref, defineOptions} from 'vue'
 import {resetPassword, userDelete} from "@/request/my.js";
 import {useUserStore} from "@/store/user.js";
 import router from "@/router/index.js";
@@ -70,6 +79,7 @@ import {accountSetName} from "@/request/account.js";
 import {useAccountStore} from "@/store/account.js";
 import {useI18n} from "vue-i18n";
 import {useSettingStore} from "@/store/setting.js";
+import {pushPublicKey, pushSubscribe, pushUnsubscribe} from "@/request/push.js";
 
 const { t } = useI18n()
 const accountStore = useAccountStore()
@@ -79,6 +89,77 @@ const setPwdLoading = ref(false)
 const setNameShow = ref(false)
 const accountName = ref(null)
 const langSelect = ref(settingStore.lang)
+const pushOn = ref(false)
+const pushLoading = ref(false)
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4)
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+  const raw = atob(base64)
+  const output = new Uint8Array(raw.length)
+  for (let i = 0; i < raw.length; i++) output[i] = raw.charCodeAt(i)
+  return output
+}
+
+async function pushRegistration() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return null
+  return Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise((resolve) => setTimeout(() => resolve(null), 4000))
+  ])
+}
+
+async function refreshPushState() {
+  const reg = await pushRegistration()
+  if (!reg) return
+  const sub = await reg.pushManager.getSubscription()
+  pushOn.value = Notification.permission === 'granted' && !!sub
+}
+
+async function togglePush() {
+  if (pushLoading.value) return
+  const reg = await pushRegistration()
+  if (!reg) {
+    ElMessage({ message: t('pushUnsupported'), type: 'error', plain: true })
+    return
+  }
+  pushLoading.value = true
+  try {
+    const current = await reg.pushManager.getSubscription()
+    if (pushOn.value && current) {
+      const endpoint = current.endpoint
+      await current.unsubscribe()
+      await pushUnsubscribe(endpoint)
+      pushOn.value = false
+      ElMessage({ message: t('pushOffMsg'), type: 'success', plain: true })
+      return
+    }
+    const permission = await Notification.requestPermission()
+    if (permission !== 'granted') {
+      ElMessage({ message: t('pushDenied'), type: 'warning', plain: true })
+      return
+    }
+    const { publicKey } = await pushPublicKey()
+    const sub = current || await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicKey)
+    })
+    await pushSubscribe(sub.toJSON())
+    pushOn.value = true
+    ElMessage({ message: t('pushOnMsg'), type: 'success', plain: true })
+  } catch (e) {
+    console.error(e)
+    if (!e?.code) {
+      ElMessage({ message: t('pushUnsupported'), type: 'error', plain: true })
+    }
+  } finally {
+    pushLoading.value = false
+  }
+}
+
+onMounted(() => {
+  refreshPushState()
+})
 
 defineOptions({
   name: 'setting'
@@ -283,6 +364,7 @@ function submitPwd() {
     flex-direction: column;
     gap: 20px;
     margin-bottom: 40px;
+    max-width: 560px;
 
     .language-select {
       width: 100px;

@@ -32,8 +32,33 @@ const dbInit = {
 		await this.v3_1DB(c);
 		await this.v3_2DB(c);
 		await this.v3_3DB(c);
+		await this.v3_4DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
+	},
+
+	async v3_4DB(c) {
+		try {
+			await c.env.db.batch([
+				c.env.db.prepare(`CREATE TABLE IF NOT EXISTS push_key (
+					id INTEGER PRIMARY KEY CHECK (id = 1),
+					public_key TEXT NOT NULL,
+					private_jwk TEXT NOT NULL
+				)`),
+				c.env.db.prepare(`CREATE TABLE IF NOT EXISTS push_sub (
+					push_id INTEGER PRIMARY KEY AUTOINCREMENT,
+					user_id INTEGER NOT NULL,
+					endpoint TEXT NOT NULL,
+					p256dh TEXT NOT NULL,
+					auth TEXT NOT NULL,
+					create_time TEXT DEFAULT CURRENT_TIMESTAMP
+				)`),
+				c.env.db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_push_sub_endpoint ON push_sub(endpoint)`),
+				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_push_sub_user ON push_sub(user_id)`)
+			]);
+		} catch (e) {
+			console.warn(`跳过字段：${e.message}`);
+		}
 	},
 
 	async v3_3DB(c) {

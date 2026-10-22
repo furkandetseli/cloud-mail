@@ -1,0 +1,39 @@
+# Shim for Workers Builds PR previews.
+#
+# Non-production Builds often run `npx wrangler preview` with root_directory "/"
+# and ignore the Worker's configured root (mail-worker/). See:
+# https://github.com/cloudflare/workers-sdk/issues/15979
+#
+# Prefer fixing the dashboard Preview command to:
+#   npx wrangler preview --cwd mail-worker
+# This root file is a fallback so preview from "/" can still find config + [previews].
+
+name = "cloud-mail"
+main = "mail-worker/src/index.js"
+compatibility_date = "2025-06-04"
+keep_vars = true
+
+[observability]
+enabled = true
+
+# Required for `npx wrangler preview` (can be empty).
+[previews]
+
+# Previews do not inherit production bindings — redeclare what the Worker reads.
+[previews.ai]
+binding = "ai"
+
+[ai]
+binding = "ai"
+
+[assets]
+binding = "assets"
+directory = "mail-worker/dist"
+not_found_handling = "single-page-application"
+run_worker_first = true
+
+# No [triggers]/crons here — cron triggers do not target Previews.
+
+[build]
+# Root has packageManager so Builds can enable pnpm; then build the Vue app.
+command = "corepack enable && pnpm --dir mail-vue install && pnpm --dir mail-vue run build"
